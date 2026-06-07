@@ -1,0 +1,27 @@
+version: 1
+architecture:
+  name: nestjs-bad
+  pattern: clean-architecture-lite
+  language: typescript
+  framework: nestjs
+layers:
+  controller:
+    description: HTTP request and response mapping.
+    path: src/**/*.controller.ts
+    can_call:
+      - use_case
+    cannot_call:
+      - repository
+  use_case:
+    description: Application use cases.
+    path: src/**/*.use-case.ts
+    can_call:
+      - repository_port
+  repository_port:
+    description: Application-owned persistence contracts.
+    path: src/**/*.repository.port.ts
+  repository:
+    description: Infrastructure persistence implementations.
+    path: src/**/*.repository.ts
+    can_call:
+      - repository_port

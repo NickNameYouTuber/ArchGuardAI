@@ -1,0 +1,44 @@
+version: 1
+architecture:
+  name: example-nestjs-project
+  pattern: clean-architecture-lite
+  language: typescript
+  framework: nestjs
+layers:
+  controller:
+    description: HTTP layer. No business logic or persistence access.
+    path: src/**/*.controller.ts
+    can_call:
+      - use_case
+    cannot_call:
+      - repository
+      - infrastructure
+  use_case:
+    description: Application actions and orchestration.
+    path: src/**/*.use-case.ts
+    can_call:
+      - domain
+      - repository_port
+  domain:
+    description: Pure business rules.
+    path: src/domain/**/*.ts
+    cannot_import:
+      - "@nestjs/*"
+      - typeorm
+      - axios
+      - src/infrastructure/**
+  repository_port:
+    description: Application-owned persistence contracts.
+    path: src/**/*.repository.port.ts
+  repository:
+    description: Persistence implementations.
+    path: src/**/*.repository.ts
+    can_call:
+      - domain
+      - repository_port
+  infrastructure:
+    description: Framework and external system adapters.
+    path: src/infrastructure/**/*.ts
+    can_call:
+      - domain
+      - repository_port

@@ -1,0 +1,58 @@
+{
+  "name": "archguard-ai",
+  "version": "0.1.0",
+  "description": "Architecture contracts and dependency checks for human and AI contributors.",
+  "type": "module",
+  "bin": {
+    "archguard": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "check": "npm run typecheck && npm run lint && npm test",
+    "dev": "tsx src/cli.ts",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "prepack": "npm run build"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "architecture",
+    "cli",
+    "lint",
+    "typescript",
+    "ai-agents"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NickNameYouTuber/ArchGuardAI.git"
+  },
+  "bugs": {
+    "url": "https://github.com/NickNameYouTuber/ArchGuardAI/issues"
+  },
+  "homepage": "https://github.com/NickNameYouTuber/ArchGuardAI#readme",
+  "dependencies": {
+    "commander": "^14.0.0",
+    "fast-glob": "^3.3.3",
+    "minimatch": "^10.0.3",
+    "typescript": "^5.9.3",
+    "yaml": "^2.8.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@types/node": "^24.10.1",
+    "eslint": "^9.39.1",
+    "tsx": "^4.21.0",
+    "typescript-eslint": "^8.48.0",
+    "vitest": "^4.0.15"
+  }
+}
