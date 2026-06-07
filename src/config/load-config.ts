@@ -2,7 +2,12 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { parse } from "yaml";
 import { ArchGuardError } from "../errors.js";
-import type { ArchitectureConfig, LayerRule } from "./types.js";
+import {
+  AGENT_TARGETS,
+  type AgentTarget,
+  type ArchitectureConfig,
+  type LayerRule,
+} from "./types.js";
 
 export const CONFIG_PATH = path.join(".archguard", "architecture.yaml");
 
@@ -38,6 +43,32 @@ function validateLayer(value: unknown, field: string): asserts value is LayerRul
   }
 }
 
+function validateAgentTargets(
+  value: unknown,
+  field: string,
+): asserts value is AgentTarget[] {
+  assertStringArray(value, field);
+  if (value.length === 0) {
+    throw new ArchGuardError(`Invalid configuration: "${field}" must not be empty.`);
+  }
+
+  const supported = new Set<string>(AGENT_TARGETS);
+  const seen = new Set<string>();
+  for (const target of value) {
+    if (!supported.has(target)) {
+      throw new ArchGuardError(
+        `Invalid configuration: unknown agent target "${target}". Supported targets: ${AGENT_TARGETS.join(", ")}.`,
+      );
+    }
+    if (seen.has(target)) {
+      throw new ArchGuardError(
+        `Invalid configuration: duplicate agent target "${target}".`,
+      );
+    }
+    seen.add(target);
+  }
+}
+
 export function validateConfig(value: unknown): ArchitectureConfig {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     throw new ArchGuardError("Invalid configuration: root value must be an object.");
@@ -57,6 +88,18 @@ export function validateConfig(value: unknown): ArchitectureConfig {
   assertString(architecture.language, "architecture.language");
   if (architecture.framework !== undefined) {
     assertString(architecture.framework, "architecture.framework");
+  }
+
+  if (config.agents !== undefined) {
+    if (
+      !config.agents ||
+      typeof config.agents !== "object" ||
+      Array.isArray(config.agents)
+    ) {
+      throw new ArchGuardError('Invalid configuration: "agents" must be an object.');
+    }
+    const agents = config.agents as Record<string, unknown>;
+    validateAgentTargets(agents.targets, "agents.targets");
   }
 
   if (!config.layers || typeof config.layers !== "object" || Array.isArray(config.layers)) {

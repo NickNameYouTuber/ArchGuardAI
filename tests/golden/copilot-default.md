@@ -1,9 +1,9 @@
-# Repository Instructions
+# GitHub Copilot Instructions
 
 <!-- archguard:start -->
 ## ArchGuard Architecture Contract
 
-_This section is generated for Codex-compatible agents by `archguard agents generate`. Edit `.archguard/architecture.yaml` instead._
+_This section is generated for GitHub Copilot by `archguard agents generate`. Edit `.archguard/architecture.yaml` instead._
 
 Project: **demo-project**
 Pattern: **layered**

@@ -1,5 +1,8 @@
 import { Command, CommanderError, InvalidArgumentError } from "commander";
-import { generateAgentsCommand } from "./commands/agents.js";
+import {
+  checkAgentsCommand,
+  generateAgentsCommand,
+} from "./commands/agents.js";
 import { checkCommand, type OutputFormat } from "./commands/check.js";
 import { initCommand } from "./commands/init.js";
 import { ArchGuardError } from "./errors.js";
@@ -36,10 +39,28 @@ export function createProgram(runtime: Runtime): Command {
   const agents = program.command("agents").description("Manage AI coding agent instructions.");
   agents
     .command("generate")
-    .description("Generate the ArchGuard-managed section in AGENTS.md.")
-    .action(async () => {
-      await generateAgentsCommand(runtime);
+    .description("Generate configured coding agent instruction files.")
+    .option("--target <target>", "generate one target")
+    .option("--all", "generate every supported target")
+    .action(async (options: { target?: string; all?: boolean }) => {
+      await generateAgentsCommand(runtime, options);
     });
+
+  agents
+    .command("check")
+    .description("Check generated coding agent instructions for drift.")
+    .option("--target <target>", "check one target")
+    .option("--all", "check every supported target")
+    .option("--format <format>", "output format: human or json", parseFormat, "human")
+    .action(
+      async (options: {
+        target?: string;
+        all?: boolean;
+        format: OutputFormat;
+      }) => {
+        await checkAgentsCommand(runtime, options);
+      },
+    );
 
   program
     .command("check")

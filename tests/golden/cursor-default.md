@@ -1,9 +1,15 @@
-# Repository Instructions
+---
+description: ArchGuard architecture contract
+globs:
+alwaysApply: true
+---
+
+# Repository Architecture
 
 <!-- archguard:start -->
 ## ArchGuard Architecture Contract
 
-_This section is generated for Codex-compatible agents by `archguard agents generate`. Edit `.archguard/architecture.yaml` instead._
+_This section is generated for Cursor by `archguard agents generate`. Edit `.archguard/architecture.yaml` instead._
 
 Project: **demo-project**
 Pattern: **layered**

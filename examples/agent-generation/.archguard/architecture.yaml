@@ -1,6 +1,6 @@
 version: 1
 architecture:
-  name: example-nestjs-project
+  name: agent-generation-demo
   pattern: clean-architecture-lite
   language: typescript
   framework: nestjs
@@ -12,15 +12,14 @@ agents:
     - copilot
 layers:
   controller:
-    description: HTTP layer. No business logic or persistence access.
+    description: HTTP request and response mapping.
     path: src/**/*.controller.ts
     can_call:
       - use_case
     cannot_call:
       - repository
-      - infrastructure
   use_case:
-    description: Application actions and orchestration.
+    description: Application use cases.
     path: src/**/*.use-case.ts
     can_call:
       - domain
@@ -31,7 +30,6 @@ layers:
     cannot_import:
       - "@nestjs/*"
       - typeorm
-      - axios
       - src/infrastructure/**
   repository_port:
     description: Application-owned persistence contracts.
@@ -39,12 +37,6 @@ layers:
   repository:
     description: Persistence implementations.
     path: src/**/*.repository.ts
-    can_call:
-      - domain
-      - repository_port
-  infrastructure:
-    description: Framework and external system adapters.
-    path: src/infrastructure/**/*.ts
     can_call:
       - domain
       - repository_port

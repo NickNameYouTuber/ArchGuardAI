@@ -24,6 +24,40 @@ describe("architecture configuration", () => {
     expect(() => validateConfig(invalid)).toThrow('unknown layer "missing"');
   });
 
+  it("validates configured agent targets", () => {
+    expect(validateConfig(DEFAULT_CONFIG).agents?.targets).toEqual([
+      "agents",
+      "cursor",
+      "claude",
+      "copilot",
+    ]);
+  });
+
+  it.each([
+    {
+      name: "empty",
+      targets: [],
+      message: '"agents.targets" must not be empty',
+    },
+    {
+      name: "unknown",
+      targets: ["agents", "windsurf"],
+      message: 'unknown agent target "windsurf"',
+    },
+    {
+      name: "duplicate",
+      targets: ["agents", "agents"],
+      message: 'duplicate agent target "agents"',
+    },
+  ])("rejects $name agent targets", ({ targets, message }) => {
+    const invalid = structuredClone(DEFAULT_CONFIG) as unknown as Record<
+      string,
+      unknown
+    >;
+    invalid.agents = { targets };
+    expect(() => validateConfig(invalid)).toThrow(message);
+  });
+
   it("loads YAML from the project contract path", async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), "archguard-config-"));
     await mkdir(path.join(root, ".archguard"));

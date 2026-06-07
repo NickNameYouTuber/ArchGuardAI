@@ -17,7 +17,8 @@ the declared layer boundaries.
 
 - `archguard init` creates a starter NestJS clean architecture contract.
 - `archguard agents generate` creates or updates an ArchGuard-managed section
-  in `AGENTS.md`.
+  for configured coding agent targets.
+- `archguard agents check` detects missing or stale generated instructions.
 - `archguard check [path]` checks TypeScript imports against `can_call`,
   `cannot_call`, and `cannot_import` rules.
 - Human-readable and JSON reports.
@@ -99,14 +100,45 @@ reference, layer diagnostics, path behavior, and troubleshooting.
 
 ```bash
 archguard agents generate
+archguard agents generate --target cursor
+archguard agents generate --all
 ```
 
-ArchGuard writes a marked section to `AGENTS.md`. Content outside
-`<!-- archguard:start -->` and `<!-- archguard:end -->` is preserved. Repeated
-runs are idempotent.
+Configure generated targets in `.archguard/architecture.yaml`:
 
-The MVP generates only `AGENTS.md`. Cursor, Claude Code, and GitHub Copilot
-targets are tracked in the [roadmap](ROADMAP.md).
+```yaml
+agents:
+  targets:
+    - agents
+    - cursor
+    - claude
+    - copilot
+```
+
+Supported outputs:
+
+| Target | File |
+| --- | --- |
+| `agents` | `AGENTS.md` |
+| `cursor` | `.cursor/rules/archguard-architecture.mdc` |
+| `claude` | `CLAUDE.md` |
+| `copilot` | `.github/copilot-instructions.md` |
+
+Without an `agents` section, ArchGuard retains the legacy behavior and
+generates only `AGENTS.md`. Content outside `<!-- archguard:start -->` and
+`<!-- archguard:end -->` is preserved. Cursor frontmatter is also preserved.
+Repeated runs are idempotent.
+
+Check generated files without modifying them:
+
+```bash
+archguard agents check
+archguard agents check --target claude
+archguard agents check --all --format json
+```
+
+The command exits with `1` when a selected file is missing or stale, and `2`
+when configuration or managed markers are invalid.
 
 ## Check a project
 
@@ -141,12 +173,14 @@ Found 1 violation(s) and 0 diagnostic(s) in 3 TypeScript file(s).
 
 ## Demo projects
 
-The repository contains two small NestJS-style TypeScript examples:
+The repository contains focused examples:
 
 - [`examples/nestjs-good`](examples/nestjs-good) follows
   `controller -> use_case -> repository_port`.
 - [`examples/nestjs-bad`](examples/nestjs-bad) imports a repository directly
   from a controller.
+- [`examples/agent-generation`](examples/agent-generation) generates and checks
+  all supported coding agent instruction formats.
 
 Try both after building:
 
@@ -173,6 +207,7 @@ npm run lint
 npm test
 npm run build
 npm run self-check
+npm run agents-check
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines and

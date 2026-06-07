@@ -1,0 +1,68 @@
+# Claude Code Instructions
+
+<!-- archguard:start -->
+## ArchGuard Architecture Contract
+
+_This section is generated for Claude Code by `archguard agents generate`. Edit `.archguard/architecture.yaml` instead._
+
+Project: **archguard-ai**
+Pattern: **layered-cli**
+Language: **typescript**
+Framework: **nodejs**
+
+Follow these dependency boundaries when adding or changing code.
+
+### cli
+
+CLI commands, reporting, and process orchestration.
+
+- Paths: src/cli.ts, src/program.ts, src/commands/**/*.ts, src/reporters.ts
+- May call: `checker`, `config`, `generator`, `core`
+- Must not call: none
+- Must not import: none
+
+### checker
+
+Deterministic project and dependency analysis.
+
+- Paths: src/checker/**/*.ts
+- May call: `config`, `core`
+- Must not call: none
+- Must not import: none
+
+### config
+
+Architecture contract models, defaults, loading, and validation.
+
+- Paths: src/config/**/*.ts
+- May call: `core`
+- Must not call: none
+- Must not import: none
+
+### generator
+
+Deterministic coding-agent instruction generation.
+
+- Paths: src/generator/**/*.ts
+- May call: `config`, `core`
+- Must not call: none
+- Must not import: none
+
+### public_api
+
+Public package exports.
+
+- Paths: src/index.ts
+- May call: `cli`, `checker`, `config`, `generator`, `core`
+- Must not call: none
+- Must not import: none
+
+### core
+
+Shared runtime, error, and package metadata utilities.
+
+- Paths: src/errors.ts, src/runtime.ts, src/version.ts
+- May call: none
+- Must not call: none
+- Must not import: none
+<!-- archguard:end -->

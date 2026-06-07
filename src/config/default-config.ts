@@ -8,6 +8,9 @@ export const DEFAULT_CONFIG: ArchitectureConfig = {
     language: "typescript",
     framework: "nestjs",
   },
+  agents: {
+    targets: ["agents", "cursor", "claude", "copilot"],
+  },
   layers: {
     controller: {
       description: "HTTP layer. Parses input, calls use cases, and maps responses.",

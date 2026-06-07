@@ -19,10 +19,10 @@ For the detailed product and engineering sequence, see
 ## Next: broader agent support
 
 - [x] Repository self-check and CLI hardening
-- [ ] Cursor rules generator
-- [ ] Claude Code instructions generator
-- [ ] GitHub Copilot instructions generator
-- [ ] Generated-file drift check
+- [x] Cursor rules generator
+- [x] Claude Code instructions generator
+- [x] GitHub Copilot instructions generator
+- [x] Generated-file drift check
 - [ ] Public npm release
 
 ## CI and pull request governance

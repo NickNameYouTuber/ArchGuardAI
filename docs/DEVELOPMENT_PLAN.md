@@ -23,7 +23,7 @@ Release and stage progress:
 
 - [x] Stage 1 core: local CLI MVP
 - [x] Stage 1 hardening: self-check, diagnostics, and documentation
-- [ ] Stage 2: multi-agent instruction generation
+- [x] Stage 2: multi-agent instruction generation
 - [ ] Stage 3: public npm package and release workflow
 - [ ] Stage 4: reusable GitHub Action
 - [ ] Stage 5: pull request governance
@@ -110,11 +110,11 @@ source for the major coding agent environments.
 ### Capabilities
 
 - [x] Generate `AGENTS.md` for Codex-compatible agents.
-- [ ] Generate Cursor project rules under `.cursor/rules/`.
-- [ ] Generate `CLAUDE.md` for Claude Code.
-- [ ] Generate `.github/copilot-instructions.md` for GitHub Copilot.
-- [ ] Select one target or generate every configured target.
-- [ ] Detect missing, stale, or manually modified generated content without
+- [x] Generate Cursor project rules under `.cursor/rules/`.
+- [x] Generate `CLAUDE.md` for Claude Code.
+- [x] Generate `.github/copilot-instructions.md` for GitHub Copilot.
+- [x] Select one target or generate every configured target.
+- [x] Detect missing, stale, or manually modified generated content without
   rewriting it.
 
 ### CLI evolution
@@ -151,22 +151,22 @@ only `AGENTS.md`.
 
 ### Technical work
 
-- [ ] Introduce a shared intermediate instruction model.
-- [ ] Implement one renderer per target format.
-- [ ] Generalize managed-content handling while respecting each target's format.
-- [ ] Validate target names and duplicate target declarations.
-- [ ] Add golden fixtures for every generated file.
-- [ ] Add a complete generation demo.
+- [x] Introduce a shared intermediate instruction model.
+- [x] Implement one renderer per target format.
+- [x] Generalize managed-content handling while respecting each target's format.
+- [x] Validate target names and duplicate target declarations.
+- [x] Add golden fixtures for every generated file.
+- [x] Add a complete generation demo.
 
 ### Completion criteria
 
-- [ ] Every target is deterministic and idempotent.
+- [x] Every target is deterministic and idempotent.
 - [x] User content outside managed regions is preserved for `AGENTS.md`.
-- [ ] User content is preserved for every additional target.
+- [x] User content is preserved for every additional target.
 - [x] Damaged managed regions produce a clear error for `AGENTS.md`.
-- [ ] Damaged or ambiguous managed regions are handled for every target.
-- [ ] Drift detection works locally and in CI.
-- [ ] Existing `v0.1` contracts and commands remain compatible.
+- [x] Damaged or ambiguous managed regions are handled for every target.
+- [x] Drift detection works locally and in CI.
+- [x] Existing `v0.1` contracts and commands remain compatible.
 
 ## Stage 3: Public package and release workflow
 

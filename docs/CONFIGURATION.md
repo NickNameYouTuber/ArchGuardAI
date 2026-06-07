@@ -67,6 +67,41 @@ Each layer requires:
 Layer names are identifiers referenced by `can_call` and `cannot_call`.
 References to unknown layers are rejected while loading the contract.
 
+## Agent instruction targets
+
+The optional `agents.targets` list controls the files handled by
+`archguard agents generate` and `archguard agents check`:
+
+```yaml
+agents:
+  targets:
+    - agents
+    - cursor
+    - claude
+    - copilot
+```
+
+Supported targets:
+
+| Target | Generated file |
+| --- | --- |
+| `agents` | `AGENTS.md` |
+| `cursor` | `.cursor/rules/archguard-architecture.mdc` |
+| `claude` | `CLAUDE.md` |
+| `copilot` | `.github/copilot-instructions.md` |
+
+The list must not be empty and cannot contain unknown or duplicate values.
+Contracts without this section remain compatible and default to `agents`.
+
+Use `--target <name>` to override the configuration for one command or `--all`
+to use every supported target. The two flags cannot be combined.
+
+ArchGuard manages only the content between its HTML comment markers. User
+content outside the markers and Cursor MDC frontmatter are preserved. Missing
+or stale managed content is reported by `archguard agents check`; malformed or
+duplicate markers are configuration errors and are never repaired
+automatically.
+
 ## Dependency rules
 
 ### `can_call`
@@ -149,6 +184,9 @@ archguard check --format json
 | `2` | Configuration, command, or runtime failure. |
 
 JSON output contains `ok`, `checkedFiles`, `violations`, and `diagnostics`.
+
+Agent drift JSON contains `ok`, `checkedTargets`, and one result per selected
+target with an `in-sync`, `missing`, or `stale` status.
 
 ## Troubleshooting
 

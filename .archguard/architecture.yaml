@@ -4,6 +4,12 @@ architecture:
   pattern: layered-cli
   language: typescript
   framework: nodejs
+agents:
+  targets:
+    - agents
+    - cursor
+    - claude
+    - copilot
 layers:
   cli:
     description: CLI commands, reporting, and process orchestration.

@@ -45,3 +45,6 @@ jobs:
 
       - name: ArchGuard self-check
         run: npm run self-check
+
+      - name: Generated agent instruction drift
+        run: npm run agents-check
