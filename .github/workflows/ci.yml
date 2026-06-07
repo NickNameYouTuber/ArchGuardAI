@@ -42,3 +42,6 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: ArchGuard self-check
+        run: npm run self-check

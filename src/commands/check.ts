@@ -3,7 +3,11 @@ import path from "node:path";
 import { checkProject } from "../checker/check-project.js";
 import { loadConfig } from "../config/load-config.js";
 import { ArchGuardError } from "../errors.js";
-import { renderHumanReport, renderJsonReport } from "../reporters.js";
+import {
+  checkFailed,
+  renderHumanReport,
+  renderJsonReport,
+} from "../reporters.js";
 import type { Runtime } from "../runtime.js";
 
 export type OutputFormat = "human" | "json";
@@ -35,7 +39,7 @@ export async function checkCommand(
   const result = await checkProject(runtime.cwd, scanPath, config);
   runtime.stdout.write(format === "json" ? renderJsonReport(result) : renderHumanReport(result));
 
-  if (result.violations.length > 0) {
+  if (checkFailed(result)) {
     throw new ArchGuardError("", 1);
   }
 }

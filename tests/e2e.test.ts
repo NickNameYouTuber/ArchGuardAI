@@ -12,7 +12,7 @@ describe("example projects", () => {
       path.join(repositoryRoot, "examples", "nestjs-good"),
     );
     expect(await runProgram(["check"], captured.runtime)).toBe(0);
-    expect(captured.stdout()).toContain("no violations found");
+    expect(captured.stdout()).toContain("no violations or diagnostics found");
   });
 
   it("returns 1 and JSON evidence for the bad example", async () => {

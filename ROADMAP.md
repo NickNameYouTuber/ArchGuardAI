@@ -3,6 +3,9 @@
 ArchGuard AI is currently at the first working CLI MVP. Roadmap items are
 ordered by the value they add to a usable open-source workflow.
 
+For the detailed product and engineering sequence, see
+[docs/DEVELOPMENT_PLAN.md](docs/DEVELOPMENT_PLAN.md).
+
 ## MVP: local architecture contract
 
 - [x] npm-ready TypeScript CLI
@@ -15,10 +18,12 @@ ordered by the value they add to a usable open-source workflow.
 
 ## Next: broader agent support
 
+- [x] Repository self-check and CLI hardening
 - [ ] Cursor rules generator
 - [ ] Claude Code instructions generator
 - [ ] GitHub Copilot instructions generator
 - [ ] Generated-file drift check
+- [ ] Public npm release
 
 ## CI and pull request governance
 
@@ -39,6 +44,8 @@ ordered by the value they add to a usable open-source workflow.
 - [ ] ADR update detector
 - [ ] Architecture drift reports
 - [ ] Feature structure and required-document checks
+- [ ] Baseline and incremental adoption mode
+- [ ] Deeper TypeScript and monorepo analysis
 - [ ] Additional languages and frameworks
 
 Roadmap items should be discussed in a GitHub issue before large

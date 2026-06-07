@@ -92,6 +92,9 @@ Use `--force` to replace an existing starter contract:
 archguard init --force
 ```
 
+See the [configuration guide](docs/CONFIGURATION.md) for the complete contract
+reference, layer diagnostics, path behavior, and troubleshooting.
+
 ## Generate agent instructions
 
 ```bash
@@ -117,8 +120,8 @@ Exit codes:
 
 | Code | Meaning |
 | --- | --- |
-| `0` | The check completed with no violations. |
-| `1` | One or more architecture violations were found. |
+| `0` | No violations or error diagnostics. Warnings may exist. |
+| `1` | Violations or error diagnostics were found. |
 | `2` | The command, configuration, or runtime failed. |
 
 Example violation:
@@ -126,12 +129,14 @@ Example violation:
 ```text
 ArchGuard check failed.
 
+Violations:
+
 1. Layer "controller" must not depend on layer "repository".
    Rule: cannot-call
    File: src/users/users.controller.ts
    Import: ./user.repository
 
-Found 1 violation(s) in 3 TypeScript file(s).
+Found 1 violation(s) and 0 diagnostic(s) in 3 TypeScript file(s).
 ```
 
 ## Demo projects
@@ -155,6 +160,10 @@ node ../../dist/cli.js check --format json
 
 The good example exits with `0`; the bad example exits with `1`.
 
+Files that match no configured layer are reported as non-blocking warnings.
+Files that match multiple layers are reported as errors because their
+dependency rules would be ambiguous.
+
 ## Development
 
 ```bash
@@ -163,10 +172,13 @@ npm run typecheck
 npm run lint
 npm test
 npm run build
+npm run self-check
 ```
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines and
-[ROADMAP.md](ROADMAP.md) for planned work.
+[ROADMAP.md](ROADMAP.md) for the short roadmap. The full staged product and
+engineering plan is in
+[docs/DEVELOPMENT_PLAN.md](docs/DEVELOPMENT_PLAN.md).
 
 ## Project direction
 

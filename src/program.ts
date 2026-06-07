@@ -4,6 +4,7 @@ import { checkCommand, type OutputFormat } from "./commands/check.js";
 import { initCommand } from "./commands/init.js";
 import { ArchGuardError } from "./errors.js";
 import type { Runtime } from "./runtime.js";
+import { VERSION } from "./version.js";
 
 function parseFormat(value: string): OutputFormat {
   if (value !== "human" && value !== "json") {
@@ -17,7 +18,7 @@ export function createProgram(runtime: Runtime): Command {
   program
     .name("archguard")
     .description("Architecture contracts and dependency checks for human and AI contributors.")
-    .version("0.1.0")
+    .version(VERSION)
     .exitOverride()
     .configureOutput({
       writeOut: (value) => runtime.stdout.write(value),

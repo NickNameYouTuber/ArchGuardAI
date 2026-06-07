@@ -1,0 +1,51 @@
+version: 1
+architecture:
+  name: archguard-ai
+  pattern: layered-cli
+  language: typescript
+  framework: nodejs
+layers:
+  cli:
+    description: CLI commands, reporting, and process orchestration.
+    path:
+      - src/cli.ts
+      - src/program.ts
+      - src/commands/**/*.ts
+      - src/reporters.ts
+    can_call:
+      - checker
+      - config
+      - generator
+      - core
+  checker:
+    description: Deterministic project and dependency analysis.
+    path: src/checker/**/*.ts
+    can_call:
+      - config
+      - core
+  config:
+    description: Architecture contract models, defaults, loading, and validation.
+    path: src/config/**/*.ts
+    can_call:
+      - core
+  generator:
+    description: Deterministic coding-agent instruction generation.
+    path: src/generator/**/*.ts
+    can_call:
+      - config
+      - core
+  public_api:
+    description: Public package exports.
+    path: src/index.ts
+    can_call:
+      - cli
+      - checker
+      - config
+      - generator
+      - core
+  core:
+    description: Shared runtime, error, and package metadata utilities.
+    path:
+      - src/errors.ts
+      - src/runtime.ts
+      - src/version.ts

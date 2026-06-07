@@ -4,7 +4,7 @@ import fg, { type Options } from "fast-glob";
 import { minimatch } from "minimatch";
 import type { ArchitectureConfig } from "../config/types.js";
 import { collectImports, resolveProjectImport } from "./imports.js";
-import { findLayer, normalizePath } from "./layers.js";
+import { findLayers, normalizePath } from "./layers.js";
 import type { CheckResult, Violation } from "./types.js";
 
 function matchesForbiddenImport(importValue: string, patterns: string[] | undefined): boolean {
@@ -37,10 +37,32 @@ export async function checkProject(
     projectFiles.map((file) => normalizePath(path.resolve(file))),
   );
   const violations: Violation[] = [];
+  const diagnostics: CheckResult["diagnostics"] = [];
 
   for (const file of files) {
     const relativeFile = normalizePath(path.relative(projectRoot, file));
-    const sourceLayer = findLayer(relativeFile, config);
+    const sourceLayers = findLayers(relativeFile, config);
+    if (sourceLayers.length === 0) {
+      diagnostics.push({
+        type: "unclassified-file",
+        severity: "warning",
+        file: relativeFile,
+        message: `File "${relativeFile}" does not match any configured layer.`,
+      });
+      continue;
+    }
+    if (sourceLayers.length > 1) {
+      diagnostics.push({
+        type: "overlapping-layers",
+        severity: "error",
+        file: relativeFile,
+        layers: sourceLayers,
+        message: `File "${relativeFile}" matches multiple layers: ${sourceLayers.join(", ")}.`,
+      });
+      continue;
+    }
+
+    const [sourceLayer] = sourceLayers;
     if (!sourceLayer) continue;
 
     const sourceRule = config.layers[sourceLayer];
@@ -73,7 +95,19 @@ export async function checkProject(
         continue;
       }
 
-      const targetLayer = findLayer(relativeTarget, config);
+      const targetLayers = findLayers(relativeTarget, config);
+      if (targetLayers.length > 1) {
+        diagnostics.push({
+          type: "overlapping-layers",
+          severity: "error",
+          file: relativeTarget,
+          layers: targetLayers,
+          message: `File "${relativeTarget}" matches multiple layers: ${targetLayers.join(", ")}.`,
+        });
+        continue;
+      }
+
+      const [targetLayer] = targetLayers;
       if (!targetLayer || targetLayer === sourceLayer) continue;
 
       if (sourceRule.cannot_call?.includes(targetLayer)) {
@@ -101,5 +135,18 @@ export async function checkProject(
     }
   }
 
-  return { checkedFiles: files.length, violations };
+  const uniqueDiagnostics = [
+    ...new Map(
+      diagnostics.map((diagnostic) => [
+        `${diagnostic.type}:${diagnostic.file}`,
+        diagnostic,
+      ]),
+    ).values(),
+  ];
+
+  return {
+    checkedFiles: files.length,
+    violations,
+    diagnostics: uniqueDiagnostics,
+  };
 }

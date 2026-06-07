@@ -15,6 +15,7 @@ describe("checkProject", () => {
 
     expect(result.checkedFiles).toBe(4);
     expect(result.violations).toEqual([]);
+    expect(result.diagnostics).toEqual([]);
   });
 
   it("reports the direct controller to repository dependency", async () => {
@@ -29,6 +30,7 @@ describe("checkProject", () => {
         targetLayer: "repository",
       }),
     ]);
+    expect(result.diagnostics).toEqual([]);
   });
 
   it("matches cannot_import against resolved project paths", async () => {
@@ -72,5 +74,70 @@ describe("checkProject", () => {
         import: "../infrastructure/database",
       }),
     );
+  });
+
+  it("reports unclassified files as warnings", async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), "archguard-unclassified-"));
+    await mkdir(path.join(root, "src"), { recursive: true });
+    await writeFile(path.join(root, "src", "orphan.ts"), "export const orphan = true;\n");
+
+    const result = await checkProject(root, ".", {
+      version: 1,
+      architecture: {
+        name: "unclassified",
+        pattern: "layered",
+        language: "typescript",
+      },
+      layers: {
+        domain: {
+          description: "Domain",
+          path: "src/domain/**/*.ts",
+        },
+      },
+    });
+
+    expect(result.violations).toEqual([]);
+    expect(result.diagnostics).toEqual([
+      expect.objectContaining({
+        type: "unclassified-file",
+        severity: "warning",
+        file: "src/orphan.ts",
+      }),
+    ]);
+  });
+
+  it("reports files matching multiple layers as errors", async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), "archguard-overlap-"));
+    await mkdir(path.join(root, "src"), { recursive: true });
+    await writeFile(path.join(root, "src", "user.ts"), "export const user = true;\n");
+
+    const result = await checkProject(root, ".", {
+      version: 1,
+      architecture: {
+        name: "overlap",
+        pattern: "layered",
+        language: "typescript",
+      },
+      layers: {
+        source: {
+          description: "Source",
+          path: "src/**/*.ts",
+        },
+        user: {
+          description: "User files",
+          path: "src/user.ts",
+        },
+      },
+    });
+
+    expect(result.violations).toEqual([]);
+    expect(result.diagnostics).toEqual([
+      expect.objectContaining({
+        type: "overlapping-layers",
+        severity: "error",
+        file: "src/user.ts",
+        layers: ["source", "user"],
+      }),
+    ]);
   });
 });

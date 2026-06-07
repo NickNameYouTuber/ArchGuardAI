@@ -3,6 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { runProgram } from "../src/program.js";
+import { VERSION } from "../src/version.js";
 import { createCapturedRuntime } from "./helpers.js";
 
 describe("CLI", () => {
@@ -14,6 +15,17 @@ describe("CLI", () => {
     const unknown = createCapturedRuntime(process.cwd());
     expect(await runProgram(["unknown"], unknown.runtime)).toBe(2);
     expect(unknown.stderr()).toContain("unknown command");
+  });
+
+  it("reads the CLI version from package metadata", async () => {
+    const captured = createCapturedRuntime(process.cwd());
+    const packageMetadata = JSON.parse(
+      await readFile(path.join(process.cwd(), "package.json"), "utf8"),
+    ) as { version: string };
+
+    expect(await runProgram(["--version"], captured.runtime)).toBe(0);
+    expect(VERSION).toBe(packageMetadata.version);
+    expect(captured.stdout()).toBe(`${packageMetadata.version}\n`);
   });
 
   it("initializes a contract and requires --force to replace it", async () => {

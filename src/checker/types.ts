@@ -7,7 +7,16 @@ export interface Violation {
   message: string;
 }
 
+export interface Diagnostic {
+  type: "overlapping-layers" | "unclassified-file";
+  severity: "error" | "warning";
+  file: string;
+  layers?: string[];
+  message: string;
+}
+
 export interface CheckResult {
   checkedFiles: number;
   violations: Violation[];
+  diagnostics: Diagnostic[];
 }

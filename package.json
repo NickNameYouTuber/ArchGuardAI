@@ -16,6 +16,7 @@
     "check": "npm run typecheck && npm run lint && npm test",
     "dev": "tsx src/cli.ts",
     "lint": "eslint .",
+    "self-check": "node dist/cli.js check src",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
